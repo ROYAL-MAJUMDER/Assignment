@@ -1,0 +1,456 @@
+PART-1 
+
+
+
+📄 Product Requirements Document (PRD)
+
+
+
+1. Product Overview
+
+
+
+The product is a Container Image Vulnerability Scanner Dashboard that helps users:
+
+
+
+Scan thousands of container images in their repositories.
+
+
+
+Identify vulnerabilities present in each image.
+
+
+
+Prioritize based on severity (Critical, High, Medium, Low).
+
+
+
+Provide guidance on remediation/fix.
+
+
+
+
+
+Target audience: DevOps, Security, and Cloud teams managing containerized applications.
+
+
+
+
+
+---
+
+
+
+2. Goals & Objectives
+
+
+
+Visibility: Provide an overview of vulnerabilities across all container images.
+
+
+
+Prioritization: Highlight images with critical/high vulnerabilities for immediate action.
+
+
+
+Scalability: Handle thousands of container images efficiently.
+
+
+
+Actionability: Enable filtering, searching, sorting, and drill-down into specific image details.
+
+
+
+
+
+
+
+---
+
+
+
+3. Key Features
+
+
+
+3.1 Dashboard
+
+
+
+Overview of scanned images.
+
+
+
+Summary widgets:
+
+
+
+Total images scanned.
+
+
+
+Number of vulnerable images.
+
+
+
+Distribution by severity (Critical, High, Medium, Low).
+
+
+
+Trend over time (optional future feature).
+
+
+
+
+
+
+
+3.2 Image List View
+
+
+
+Table of all container images.
+
+
+
+Columns:
+
+
+
+Image name & tag.
+
+
+
+Registry/repository.
+
+
+
+Last scan date.
+
+
+
+Number of vulnerabilities by severity (Critical, High, Medium, Low).
+
+
+
+Status (Safe / Needs Attention).
+
+
+
+
+
+User actions:
+
+
+
+Sort by severity, name, last scanned.
+
+
+
+Search images.
+
+
+
+Filter (e.g., “Show only Critical”).
+
+
+
+
+
+
+
+3.3 Image Detail View
+
+
+
+Detailed breakdown for a selected image:
+
+
+
+Image metadata (name, tag, size, creation date).
+
+
+
+Vulnerability list (CVE ID, severity, package affected, fixed version if available).
+
+
+
+Suggested fixes (update to patched version).
+
+
+
+
+
+
+
+3.4 Bulk Actions
+
+
+
+Select multiple images for:
+
+
+
+Exporting vulnerability reports.
+
+
+
+Marking as “Acknowledged.”
+
+
+
+Scheduling rescans.
+
+
+
+
+
+
+
+
+
+---
+
+
+
+4. User Stories
+
+
+
+1. As a security engineer, I want to see which images have vulnerabilities, so I can prioritize remediation.
+
+
+
+
+
+2. As a DevOps engineer, I want to filter images by severity, so I can focus on critical risks first.
+
+
+
+
+
+3. As a team lead, I want an at-a-glance dashboard, so I can report security posture to stakeholders.
+
+
+
+
+
+4. As a developer, I want to see fix suggestions (patched versions), so I can update my Dockerfiles quickly.
+
+
+
+
+
+
+
+
+
+---
+
+
+
+5. Success Metrics
+
+
+
+Time to identify critical vulnerabilities reduced.
+
+
+
+% of critical vulnerabilities fixed within SLA.
+
+
+
+User adoption (frequency of dashboard usage).
+
+
+
+
+
+
+
+---
+
+
+
+6. Constraints & Assumptions
+
+
+
+Scans may take time → async scans with progress indicators.
+
+
+
+Must integrate with common registries (Docker Hub, AWS ECR, GCP Artifact Registry, etc.).
+
+
+
+API-first design → enable CI/CD pipeline integration.
+
+
+
+
+
+
+
+---
+
+
+
+🖼 Low-Fidelity Wireframes (ASCII Sketches)
+
+
+
+1. Dashboard
+
+
+
+-----------------------------------------------------
+
+|   Container Security Dashboard                     |
+
+-----------------------------------------------------
+
+| Total Images: 1200   | Vulnerable: 800   | Safe: 400|
+
+-----------------------------------------------------
+
+| Severity Breakdown:                               |
+
+| [Critical: 120] [High: 340] [Medium: 220] [Low:120]|
+
+-----------------------------------------------------
+
+| Top 5 Images with Critical Vulnerabilities        |
+
+| 1. nginx:1.14  - 12 Critical                     |
+
+| 2. redis:5.0   -  9 Critical                     |
+
+| 3. myapp:v2    -  8 Critical                     |
+
+-----------------------------------------------------
+
+
+
+2. Image List View
+
+
+
+---------------------------------------------------------------
+
+| Image Name   | Repo        | Last Scan   | Crit | High | Med |
+
+---------------------------------------------------------------
+
+| nginx:1.14   | Docker Hub  | 2025-08-10  |  12  |  30  |  15 |
+
+| redis:5.0    | AWS ECR     | 2025-08-09  |   9  |  12  |   5 |
+
+| myapp:v2     | GCP Reg     | 2025-08-12  |   8  |  20  |  10 |
+
+---------------------------------------------------------------
+
+[Search Box] [Filter: Critical Only] [Export Report]
+
+
+
+3. Image Detail View
+
+
+
+-------------------------------------------------------------
+
+| Image: nginx:1.14   Repo: Docker Hub   Last Scan: 2025-08-10|
+
+-------------------------------------------------------------
+
+| Vulnerabilities:                                            |
+
+| CVE-2025-12345 | Critical | openssl-1.0.2 | Fixed: 1.0.3    |
+
+| CVE-2025-23456 | High     | libxml2-2.9   | Fixed: 2.9.1    |
+
+| CVE-2025-34567 | Medium   | curl-7.58     | Fixed: 7.60     |
+
+-------------------------------------------------------------
+
+[Rescan] [Export Report] [Acknowledge Risk]
+
+
+
+
+
+---
+
+
+
+✅ Bonus: Development Action Items
+
+
+
+1. Backend
+
+
+
+Implement container image scanning engine (integrate with Trivy, Clair, or custom scanner).
+
+
+
+Store results in database (PostgreSQL/ElasticSearch for querying).
+
+
+
+Expose REST/GraphQL API for frontend.
+
+
+
+
+
+
+
+2. Frontend
+
+
+
+Build dashboard UI (React, Tailwind, D3.js/Recharts for charts).
+
+
+
+Implement list and detail views with filters/search.
+
+
+
+
+
+
+
+3. Integrations
+
+
+
+Registry integrations (Docker Hub, AWS ECR, GCP, Azure ACR).
+
+
+
+CI/CD pipeline integration for automated scanning.
+
+
+
+
+
+
+
+
+
+4. Scalability
+
+
+
+Background job queue for parallel scanning.
+
+
+
+Pagination & async loading in UI for large image sets.
+
