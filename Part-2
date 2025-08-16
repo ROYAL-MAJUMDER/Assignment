@@ -1,0 +1,188 @@
+PART-2
+
+
+
+
+
+
+
+
+
+🛠 Steps to Perform Kubernetes Security Scan with Kubescape
+
+
+
+1. Install Kubescape
+
+
+
+On your local machine:
+
+
+
+curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
+
+
+
+Verify installation:
+
+
+
+kubescape version
+
+
+
+
+
+---
+
+
+
+2. Install a Local K8s Cluster
+
+
+
+Choose one (for testing, Kind is lightweight):
+
+
+
+# Kind
+
+kind create cluster --name k8s-sec-scan
+
+
+
+or with Minikube:
+
+
+
+minikube start
+
+
+
+
+
+---
+
+
+
+3. Run Kubescape Scan
+
+
+
+Run the scan against your cluster:
+
+
+
+kubescape scan framework nsa --format json --output results.json
+
+
+
+framework nsa → runs NSA Kubernetes hardening guidelines.
+
+
+
+--format json → saves results in JSON.
+
+
+
+--output results.json → outputs to a JSON file.
+
+
+
+
+
+
+
+---
+
+
+
+4. Sample JSON Output (Excerpt)
+
+
+
+Your actual file will be larger, but here’s a simplified example:
+
+
+
+{
+
+  "cluster": "k8s-sec-scan",
+
+  "scannedAt": "2025-08-16T09:30:00Z",
+
+  "results": [
+
+    {
+
+      "controlID": "C-0016",
+
+      "name": "Ensure that the default namespace is not used",
+
+      "severity": "Medium",
+
+      "status": "Failed",
+
+      "resources": [
+
+        {
+
+          "kind": "Pod",
+
+          "name": "nginx",
+
+          "namespace": "default"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "controlID": "C-0057",
+
+      "name": "Ensure Image Tag is not latest",
+
+      "severity": "High",
+
+      "status": "Failed",
+
+      "resources": [
+
+        {
+
+          "kind": "Deployment",
+
+          "name": "myapp",
+
+          "namespace": "production"
+
+        }
+
+      ]
+
+    }
+
+  ]
+
+}
+
+
+
+
+
+---
+
+
+
+5. Deliverable
+
+
+
+After running the above, you’ll get a file named results.json containing the K8s findings.
+
+This file can be shared as the deliverable for Problem Statement 2.
+
