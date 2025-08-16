@@ -1,0 +1,260 @@
+PART-3
+
+
+
+✅ Step #1: GoLang Web App (Date & Time)
+
+
+
+main.go
+
+
+
+package main
+
+
+
+import (
+
+	"fmt"
+
+	"net/http"
+
+	"time"
+
+)
+
+
+
+func handler(w http.ResponseWriter, r *http.Request) {
+
+	currentTime := time.Now().Format("2006-01-02 15:04:05")
+
+	fmt.Fprintf(w, "Current Date & Time: %s", currentTime)
+
+}
+
+
+
+func main() {
+
+	http.HandleFunc("/", handler)
+
+	fmt.Println("Server starting on port 8080...")
+
+	http.ListenAndServe(":8080", nil)
+
+}
+
+
+
+
+
+---
+
+
+
+Dockerfile
+
+
+
+# Step 1: Build Go binary
+
+FROM golang:1.22 AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN go mod init datetime-app && go build -o datetime-app
+
+
+
+# Step 2: Run in minimal container
+
+FROM alpine:3.19
+
+WORKDIR /root/
+
+COPY --from=builder /app/datetime-app .
+
+EXPOSE 8080
+
+CMD ["./datetime-app"]
+
+
+
+
+
+---
+
+
+
+Build & Push to DockerHub
+
+
+
+# Build Docker image
+
+docker build -t <your-dockerhub-username>/datetime-app:latest .
+
+
+
+# Login & Push
+
+docker login
+
+docker push <your-dockerhub-username>/datetime-app:latest
+
+
+
+
+
+---
+
+
+
+✅ Step #2: K8s Declarative Deployment (2 Replicas)
+
+
+
+deployment.yaml
+
+
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: datetime-deployment
+
+spec:
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: datetime-app
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: datetime-app
+
+    spec:
+
+      containers:
+
+      - name: datetime-container
+
+        image: <your-dockerhub-username>/datetime-app:latest
+
+        ports:
+
+        - containerPort: 8080
+
+
+
+
+
+---
+
+
+
+✅ Step #3: Expose to Internet (WAN)
+
+
+
+service.yaml
+
+
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: datetime-service
+
+spec:
+
+  type: LoadBalancer   # Use NodePort if LoadBalancer not available
+
+  selector:
+
+    app: datetime-app
+
+  ports:
+
+  - protocol: TCP
+
+    port: 80
+
+    targetPort: 8080
+
+
+
+
+
+---
+
+
+
+🛠 Commands to Deploy
+
+
+
+# Apply deployment & service
+
+kubectl apply -f deployment.yaml
+
+kubectl apply -f service.yaml
+
+
+
+# Verify pods
+
+kubectl get pods
+
+
+
+# Check service external IP (for LoadBalancer)
+
+kubectl get svc datetime-service
+
+
+
+If using Minikube, get service URL:
+
+
+
+
+
+minikube service datetime-service
+
+
+
+
+
+---
+
+
+
+🌍 Expected Output
+
+
+
+Visiting the external IP / service URL →
+
+
+
+Current Date & Time: 2025-08-16 14:32:15
+
